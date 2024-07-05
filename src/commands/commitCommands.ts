@@ -144,10 +144,17 @@ export async function runCommitLikeCommand(repository: MagitRepository, args: st
 			stagedEditorTask = Diffing.showDiffSection(repository, Section.Staged, true);
 		}
 
-		const env: NodeJS.ProcessEnv = { 'GIT_EDITOR': `"${codePath}" --wait` };
+		let currentInstancePath = '';
+		if (vscode.workspace.workspaceFolders?.at(0)) {
+			currentInstancePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		}
+
+		const cmd = `"${codePath}" --wait --reuse-window ${currentInstancePath} `;
+
+		const env: NodeJS.ProcessEnv = { 'GIT_EDITOR': cmd };
 
 		if (editor) {
-			env[editor] = `"${codePath}" --wait`;
+			env[editor] = cmd;
 		}
 
 		const commitSuccessMessageTask = gitRun(repository.gitRepository, args, { env });
