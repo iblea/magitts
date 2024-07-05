@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.0]
+- Fix magit.commit opening in incorrect workspace when multiple vscode instances open
+- Add Create New Spin Off to branching commands
+
 ## [v1.0.0]
 - Autostash now enabled on rebase by default, can be disabled
 - Many command/args added
