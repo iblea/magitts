@@ -1,4 +1,5 @@
 import { ViewColumn, window } from 'vscode';
+import * as Constants from '../common/constants';
 import { MenuState, MenuUtil } from '../menu/menu';
 import { PickMenuUtil } from '../menu/pickMenu';
 import { MagitRepository } from '../models/magitRepository';
@@ -14,7 +15,7 @@ const branchingCommands = [
 	{ label: 'c', description: 'Checkout new branch', action: checkoutNewBranch },
 	// { label: "w", description: "Checkout new worktree", action: checkout },
 	// { label: "y", description: "Checkout pull-request", action: checkout },
-	// { label: "s", description: "Create new spin-off", action: createNewSpinoff },
+	{ label: 's', description: 'Create new spin-off', action: createNewSpinoff },
 	{ label: 'n', description: 'Create new branch', action: createNewBranch },
 	// { label: "W", description: "Create new worktree", action: checkout },
 	// { label: "Y", description: "Create from pull-request", action: checkout },
@@ -80,7 +81,7 @@ async function checkoutPullRequest(menuState: MenuState) {
 }
 
 async function createNewBranch(menuState: MenuState) {
-	return _createBranch(menuState, false);
+	return await _createBranch(menuState, false);
 }
 
 // async function configureBranch(menuState: MenuState) {
@@ -197,5 +198,67 @@ async function _createBranch({ repository }: MenuState, checkout: boolean) {
 		} else {
 			throw new Error('No name given for new branch');
 		}
+	}
+}
+
+async function createNewSpinoff({ repository }: MenuState) {
+	const newBranchName = await window.showInputBox({
+		prompt: 'Name for new branch',
+	});
+
+	if (!newBranchName || newBranchName.length < 1) {
+		return window.setStatusBarMessage(
+			'No name given for new branch',
+			Constants.StatusMessageDisplayTimeout
+		);
+	}
+
+	if (repository.branches.find(b => b.name === newBranchName)) {
+		return window.setStatusBarMessage(
+			`Cannot spin off ${newBranchName}. It already exists`,
+			Constants.StatusMessageDisplayTimeout
+		);
+	}
+
+	const base = repository.HEAD?.name;
+
+	if (!base) {
+		return window.setStatusBarMessage(
+			'No branch checked out',
+			Constants.StatusMessageDisplayTimeout
+		);
+	}
+
+	// Save current commit hash of base branch for later reference
+	const baseCommit = repository.HEAD?.commit;
+
+	// Get upsteam branch commit hash of base branch
+	const upstreamBranchCommit = repository.HEAD.upstreamRemote?.commit?.hash;
+
+	// Checkout new branch
+	await gitRun(repository.gitRepository, ['checkout', '-b', newBranchName]);
+
+	if (baseCommit && upstreamBranchCommit && baseCommit !== upstreamBranchCommit) {
+		// Find common ancestor of base branch and upstream branch
+		const mergeBase = await repository.gitRepository.getMergeBase(baseCommit, upstreamBranchCommit);
+
+		// Reset the original branch to the common ancestor
+		await gitRun(repository.gitRepository, [
+			'update-ref',
+			'-m',
+			`"reset: moving to ${mergeBase}"`,
+			`refs/heads/${base}`,
+			mergeBase
+		]);
+
+		window.setStatusBarMessage(
+			`Branch ${base} was reset to ${mergeBase}`,
+			Constants.StatusMessageDisplayTimeout
+		);
+	} else {
+		window.setStatusBarMessage(
+			`Branch ${base} not changed`,
+			Constants.StatusMessageDisplayTimeout
+		);
 	}
 }
