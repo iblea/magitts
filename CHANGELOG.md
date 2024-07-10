@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.2.1]
+- Revert Fix magit.commit opening in incorrect workspace when multiple vscode instances open
+
 ## [v1.1.0]
 - Fix magit.commit opening in incorrect workspace when multiple vscode instances open
 - Add Create New Spin Off to branching commands

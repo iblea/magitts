@@ -162,9 +162,6 @@ remove the default edamagit bindings and the collisions with the Vim extension.
   ```
 </details>
 
-## Roadmap
-_The goal is to become a true version of magit_
-
 ### Interface
   - More interactivity in second-tier views (commit view, stash view, etc)
   - Config menus
