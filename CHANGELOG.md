@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.2.2]
+- Fix electron mapping fs to original-fs
+
 ## [v1.2.1]
 - Revert Fix magit.commit opening in incorrect workspace when multiple vscode instances open
 
