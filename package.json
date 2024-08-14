@@ -1,13 +1,13 @@
 {
 	"name": "magitts",
-	"preview": true,
+	"preview": false,
 	"displayName": "Magitts",
 	"description": "Magit for Visual Studio Code",
 	"publisher": "hendo",
 	"author": {
 		"name": "Adam Henderson"
 	},
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"engines": {
 		"vscode": "^1.50.0"
 	},
