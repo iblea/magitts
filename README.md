@@ -9,6 +9,7 @@
 </h1>
 
 <h3 align="center">Magit for VSCode, inspired by the original <a href="https://magit.vc/" target="_blank">Magit</a>.</h3>
+<p align="center">iblea Magitts (magit + TypeScript) is forked from <a href="https://github.com/a-hendo/magitts">A-Hendo/magitts</a></p>
 <p align="center">Magitts (magit + TypeScript) is forked from <a href="https://github.com/kahole/edamagit">edamagit</a></p>
 
 <p align="center">

@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.3.0]
+- Improvement magitts:logging print
+
 ## [v1.2.2]
 - Fix electron mapping fs to original-fs
 
